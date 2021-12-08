@@ -29,9 +29,13 @@ class Input extends Component {
 								 onBlur={() => this.setState({focus: false})}
 					/>
 				</div>
-				{this.props.valid &&
-				<span className={s.icon}>
+				{this.props.valid && this.props.value && this.props.name !== 'password' && this.props.name !== 'secondPassword' &&
+				<span className={s.check_circle}>
 					<i className="fa fa-check-circle"/>
+				</span>}
+				{this.props.value && (this.props.name === 'password' || this.props.name === 'secondPassword') &&
+				<span className={s.eye} onClick={this.props.changeType}>
+					<i className="fa fa-eye"/>
 				</span>}
 
 			</div>

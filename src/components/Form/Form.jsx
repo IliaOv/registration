@@ -1,12 +1,15 @@
 import React, {Component} from 'react';
-import {FormErrors} from '../FormErrors/FormErrors';
 import Input from '../Input/Input';
 import s from './Form.module.css';
 import ToggleSwitch from '../ToggleSwitch/ToggleSwitch';
+import ReactTooltip from 'react-tooltip';
 
 class Form extends Component {
 	constructor(props) {
 		super(props);
+
+		this.changeType = this.changeType.bind(this)
+
 		this.state = {
 			company: false,
 			surname: '',
@@ -33,7 +36,8 @@ class Form extends Component {
 			phoneValid: false,
 			emailValid: false,
 			innValid: false,
-			formValid: false
+			formValid: false,
+			passwordInputType: 'password'
 		}
 	}
 
@@ -47,7 +51,10 @@ class Form extends Component {
 	}
 
 	changeUser = () => {
-		this.setState({company: !this.state.company})
+		this.setState({company: !this.state.company},
+			() => {
+				(this.state.surname || !this.state.company) && this.validateField('surname', this.state.surname)
+			})
 	}
 
 	validateField(fieldName, value) {
@@ -61,20 +68,23 @@ class Form extends Component {
 
 		switch (fieldName) {
 			case 'surname':
-				surnameValid = value.length > 1;
-				fieldValidationErrors.surname = surnameValid ? '' : ' слишком короткая';
+				surnameValid = !this.state.company ? 1 : (value.length > 1);
+				fieldValidationErrors.surname = surnameValid ? '' : 'Фамилия слишком короткая';
 				break;
 			case 'name':
 				nameValid = value.length > 1;
-				fieldValidationErrors.name = nameValid ? '' : ' слишком короткое'
+				fieldValidationErrors.name = nameValid ? '' : 'Имя слишком короткое'
 				break;
 			case 'email':
 				emailValid = value.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i);
 				fieldValidationErrors.email = emailValid ? '' : ' некорректен';
 				break;
 			case 'password':
-				passwordValid = value.length >= 6;
-				fieldValidationErrors.password = passwordValid ? '' : ' слишком короткий или не содержит ни одной цифры';
+			case 'secondPassword':
+				passwordValid = (value.length >= 6) && value.match(/(?=.*[0-9])/g);
+				fieldValidationErrors.password = passwordValid ? '' : 'Пароль слишком короткий или не содержит ни одной цифры';
+				secondPasswordValid = (this.state.password === this.state.secondPassword);
+				fieldValidationErrors.secondPassword = secondPasswordValid ? '' : 'Пароли не совпадают';
 				break;
 			default:
 				break;
@@ -92,43 +102,61 @@ class Form extends Component {
 		this.setState({formValid: this.state.surnameValid && this.state.nameValid /*&& this.state.emailValid && this.state.passwordValid*/});
 	}
 
+	changeType() {
+		if (this.state.passwordInputType === 'text') {
+			this.setState({passwordInputType: 'password'})
+		} else {
+			this.setState({passwordInputType: 'text'})
+		}
+	}
+
 	errorClass(error) {
 		return error.length
-		//(error.length === 0 ? '' : 'has-error');
 	}
 
 	render() {
 		return (
 			<form className={s.form}>
 
-				<div className="panel panel-default">
-					<FormErrors formErrors={this.state.formErrors}/>
-				</div>
-
 				<div className={s.clientType}>
-					<label className={s.clientType__person} htmlFor="daily">Физическое лицо</label>
+					<label className={s.clientType__person} htmlFor="person_company">Физическое лицо</label>
 					<ToggleSwitch
-						id="daily"
+						id="person_company"
 						small
 						checked={this.state.company}
 						onChange={this.changeUser}
 					/>
-					<label className={s.clientType__company} htmlFor="daily">Юридическое лицо</label>
+					<label className={s.clientType__company} htmlFor="person_company">Юридическое лицо</label>
 				</div>
 
 				<div className={`form-group ${this.errorClass(this.state.formErrors.surname)}`}>
-					<Input type='text' required={true} name='surname' title='Фамилия'
-								 hasError={this.errorClass(this.state.formErrors.surname)}
-								 value={this.state.surname}
-								 valid={this.state.surnameValid}
-								 handleUserInput={this.handleUserInput}/>
+					<div data-tip data-for="surname">
+						<Input data-tip data-for="surname" type='text' required={this.state.company} name='surname'
+									 title={this.state.company ? 'Фамилия  ⃰' : 'Фамилия'}
+									 hasError={this.errorClass(this.state.formErrors.surname)}
+									 value={this.state.surname}
+									 valid={this.state.surnameValid}
+									 handleUserInput={this.handleUserInput}/>
+					</div>
+					{this.state.formErrors.surname &&
+					<ReactTooltip id='surname' type='error'>
+						<span>{this.state.formErrors.surname}</span>
+					</ReactTooltip>}
 				</div>
 
 				<div className={`form-group ${this.errorClass(this.state.formErrors.name)}`}>
-					<Input type='text' required={true} name='name' title='Имя'
-								 value={this.state.name}
-								 valid={this.state.nameValid}
-								 handleUserInput={this.handleUserInput}/>
+					<div data-tip data-for="name">
+						<Input type='text' required={true} name='name'
+									 title='Имя ⃰'
+									 hasError={this.errorClass(this.state.formErrors.name)}
+									 value={this.state.name}
+									 valid={this.state.nameValid}
+									 handleUserInput={this.handleUserInput}/>
+					</div>
+					{this.state.formErrors.name &&
+					<ReactTooltip id='name' type='error'>
+						<span>{this.state.formErrors.name}</span>
+					</ReactTooltip>}
 				</div>
 
 				<div>
@@ -138,17 +166,35 @@ class Form extends Component {
 				</div>
 
 				<div className={`form-group ${this.errorClass(this.state.formErrors.password)}`}>
-					<Input type='text' required={true} name='password' title='Пароль'
-								 value={this.state.password}
-								 valid={this.state.passwordValid}
-								 handleUserInput={this.handleUserInput}/>
+					<div data-tip data-for="password">
+						<Input type={this.state.passwordInputType} required={true} name='password'
+									 title='Пароль'
+									 changeType={this.changeType}
+									 hasError={this.errorClass(this.state.formErrors.password)}
+									 value={this.state.password}
+									 valid={this.state.passwordValid}
+									 handleUserInput={this.handleUserInput}/>
+					</div>
+					{this.state.formErrors.password &&
+					<ReactTooltip id='password' type='error'>
+						<span>{this.state.formErrors.password}</span>
+					</ReactTooltip>}
 				</div>
 
 				<div className={`form-group ${this.errorClass(this.state.formErrors.secondPassword)}`}>
-					<Input type='text' required={true} name='secondPassword' title='Повторите пароль'
-								 value={this.state.secondPassword}
-								 valid={this.state.secondPasswordValid}
-								 handleUserInput={this.handleUserInput}/>
+					<div data-tip data-for="secondPassword">
+						<Input type={this.state.passwordInputType} required={true} name='secondPassword'
+									 title='Повторите пароль'
+									 changeType={this.changeType}
+									 hasError={this.errorClass(this.state.formErrors.secondPassword)}
+									 value={this.state.secondPassword}
+									 valid={this.state.secondPasswordValid}
+									 handleUserInput={this.handleUserInput}/>
+					</div>
+					{this.state.formErrors.secondPassword &&
+					<ReactTooltip id='secondPassword' type='error'>
+						<span>{this.state.formErrors.secondPassword}</span>
+					</ReactTooltip>}
 				</div>
 
 				<button className={!this.state.formValid ? s.submitBtn_disabled : s.submitBtn} type="submit" form="registration"

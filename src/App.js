@@ -3,7 +3,6 @@ import s from './App.module.css';
 import Form from './components/Form/Form';
 
 class App extends Component {
-
 	render() {
 		console.log(1)
 		return (

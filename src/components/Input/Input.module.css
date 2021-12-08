@@ -19,7 +19,7 @@
 
 .block:active, .block:focus, .block:focus-within, .block:hover {
     border: 1px solid var(--accent-color);
-    color:var(--accent-color);
+    color: var(--accent-color);
 }
 
 .block:active .block__placeholder_top, .block:focus .block__placeholder_top, .block:focus-within .block__placeholder_top, .block:hover .block__placeholder_top, .block:active .block__placeholder, .block:active .block__placeholder_top, .block:focus .block__placeholder, .block:focus .block__placeholder_top, .block:focus-within .block__placeholder, .block:focus-within .block__placeholder_top, .block:hover .block__placeholder, .block:hover .block__placeholder_top, .block:active .block__field, .block:focus .block__field, .block:focus-within .block__field, .block:hover .block__field {
@@ -68,8 +68,21 @@ input {
     padding: 22px 20px 10px 20px;
     box-sizing: border-box;
 }
-.icon {
+
+.check_circle {
     margin-right: 40px;
     color: var(--accent-color);
+}
+
+.eye {
+    margin-right: 40px;
+    color: var(--txt-color);
+    cursor: pointer;
+}
+
+.eye:hover {
+    margin-right: 40px;
+    color: var(--accent-color);
+    cursor: pointer;
 }
 
