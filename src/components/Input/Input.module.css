@@ -1,0 +1,75 @@
+@import '../../variables.css';
+
+.block {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 5px 0;
+    min-height: 32px;
+    color: var(--txt-color);
+    border: 1px solid var(--inactive-color);
+    border-radius: 4px;
+}
+
+.block .content {
+    flex-grow: 1;
+    margin: 6px 8px;
+}
+
+.block:active, .block:focus, .block:focus-within, .block:hover {
+    border: 1px solid var(--accent-color);
+    color:var(--accent-color);
+}
+
+.block:active .block__placeholder_top, .block:focus .block__placeholder_top, .block:focus-within .block__placeholder_top, .block:hover .block__placeholder_top, .block:active .block__placeholder, .block:active .block__placeholder_top, .block:focus .block__placeholder, .block:focus .block__placeholder_top, .block:focus-within .block__placeholder, .block:focus-within .block__placeholder_top, .block:hover .block__placeholder, .block:hover .block__placeholder_top, .block:active .block__field, .block:focus .block__field, .block:focus-within .block__field, .block:hover .block__field {
+    color: var(--accent-color);
+}
+
+.block.has_error {
+    border-color: var(--error-color);
+}
+
+.block__placeholder, .block__placeholder_top {
+    position: absolute;
+    left: 5px;
+    top: 18%;
+    margin: 4px 0;
+    padding: 6px 20px;
+    font-size: 16px;
+    color: var(--second-color);
+    z-index: 99;
+}
+
+.block__placeholder_top {
+    top: -8%;
+    font-size: 13px;
+}
+
+.block__field {
+    position: relative;
+    width: 100%;
+    font-size: 14px;
+    color: var(--txt-color);
+    background: transparent;
+    border: none;
+    box-sizing: border-box;
+    z-index: 100;
+    outline: none;
+}
+
+input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
+    display: none;
+}
+
+
+input {
+    width: 100%;
+    padding: 22px 20px 10px 20px;
+    box-sizing: border-box;
+}
+.icon {
+    margin-right: 40px;
+    color: var(--accent-color);
+}
+
