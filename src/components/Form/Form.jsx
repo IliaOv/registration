@@ -61,17 +61,21 @@ class Form extends Component {
 
 	maskPhone(e) {
 		let val = e.target.value;
-		if (val.length > 2) {
-			val = val.slice(3)
-		}
-		val = val.replace(/ /gm, '');
-		val = val.replace(/\D/g, '');
-		if (val.length <= 10) {
-			let num = `+7 (${val.substring(0, 3)}) ${val.substring(3, 6)}-${val.substring(6, 8)}-${val.substring(8, val.length)}`;
-			this.setState({phone: num.trim()},
-				() => {
-					this.validateField('phone', num)
-				});
+		if (val.length === 0) {
+			this.setState({phone: ''});
+		} else {
+			if (val.length > 2) {
+				val = val.slice(3)
+			}
+			val = val.replace(/ /gm, '');
+			val = val.replace(/\D/g, '');
+			if (val.length > 0 && val.length <= 10) {
+				let num = `+7 (${val.substring(0, 3)}) ${val.substring(3, 6)}-${val.substring(6, 8)}-${val.substring(8, val.length)}`;
+				this.setState({phone: num.trim()},
+					() => {
+						this.validateField('phone', num)
+					});
+			}
 		}
 	};
 
@@ -181,7 +185,7 @@ class Form extends Component {
 
 	render() {
 		return (
-			<form className={s.form} name='registration'>
+			<form className={s.form} id='registration'>
 
 				<div className={s.clientType}>
 					<label className={s.clientType__person} htmlFor="person_company">Физическое лицо</label>
@@ -197,31 +201,23 @@ class Form extends Component {
 				<div data-tip data-for="surname">
 					<Input data-tip data-for="surname" type='text' required={this.state.company} name='surname'
 								 title={this.state.company ? 'Фамилия  ⃰' : 'Фамилия'}
-								 hasError={this.errorClass(this.state.formErrors.surname)}
+								 hasError={this.state.surname.length && this.errorClass(this.state.formErrors.surname)}
 								 value={this.state.surname}
 								 valid={this.state.surnameValid}
 								 handleUserInput={this.handleUserInput}/>
 				</div>
-				{this.state.formErrors.surname &&
-				<ReactTooltip id='surname' type='error'>
-					<span>{this.state.formErrors.surname}</span>
-				</ReactTooltip>}
 
 				<div data-tip data-for="name">
 					<Input type='text' required={true} name='name'
 								 title='Имя ⃰'
-								 hasError={this.errorClass(this.state.formErrors.name)}
+								 hasError={this.state.name.length && this.errorClass(this.state.formErrors.name)}
 								 value={this.state.name}
 								 valid={this.state.nameValid}
 								 handleUserInput={this.handleUserInput}/>
 				</div>
-				{this.state.formErrors.name &&
-				<ReactTooltip id='name' type='error'>
-					<span>{this.state.formErrors.name}</span>
-				</ReactTooltip>}
 
 				<div>
-					<Input type='text' required={true} name='patronymic' title='Отчество'
+					<Input type='text' name='patronymic' title='Отчество'
 								 value={this.state.patronymic}
 								 handleUserInput={this.handleUserInput}/>
 				</div>
@@ -231,15 +227,16 @@ class Form extends Component {
 						<Input type={this.state.passwordInputType} required={true} name='password'
 									 title='Пароль ⃰'
 									 changePasswordType={this.changePasswordType}
-									 hasError={this.errorClass(this.state.formErrors.password)}
+									 hasError={this.state.password && this.errorClass(this.state.formErrors.password)}
 									 value={this.state.password}
 									 valid={this.state.passwordValid}
 									 handleUserInput={this.handleUserInput}/>
 					</div>
-					{this.state.formErrors.password &&
-					<ReactTooltip id='password' type='error'>
-						<span>{this.state.formErrors.password}</span>
-					</ReactTooltip>}
+					{this.state.password && this.state.formErrors.password
+						? <ReactTooltip id='password' type='error'>
+							<span>{this.state.formErrors.password}</span>
+						</ReactTooltip>
+						: null}
 
 					<div className={s.progress}>
 						<div
@@ -254,56 +251,61 @@ class Form extends Component {
 						<Input type={this.state.passwordInputType} required={true} name='secondPassword'
 									 title='Повторите пароль ⃰'
 									 changePasswordType={this.changePasswordType}
-									 hasError={this.errorClass(this.state.formErrors.secondPassword)}
+									 hasError={this.state.secondPassword && this.errorClass(this.state.formErrors.secondPassword)}
 									 value={this.state.secondPassword}
 									 valid={this.state.secondPasswordValid}
 									 handleUserInput={this.handleUserInput}/>
 					</div>
-					{this.state.formErrors.secondPassword &&
-					<ReactTooltip id='secondPassword' type='error'>
-						<span>{this.state.formErrors.secondPassword}</span>
-					</ReactTooltip>}
+					{this.state.secondPassword && this.state.formErrors.secondPassword
+						? <ReactTooltip id='secondPassword' type='error'>
+							<span>{this.state.formErrors.secondPassword}</span>
+						</ReactTooltip>
+						: null}
 				</div>
 
 				<div data-tip data-for="phone">
 					<Input type='tel' required={true} name='phone'
 								 title='Телефон ⃰'
-								 hasError={this.errorClass(this.state.formErrors.phone)}
+								 hasError={this.state.phone && this.errorClass(this.state.formErrors.phone)}
 								 value={this.state.phone}
 								 valid={this.state.phoneValid}
 								 handleUserInput={this.handleUserInput}/>
 				</div>
-				{this.state.formErrors.phone &&
-				<ReactTooltip id='phone' type='error'>
-					<span>{this.state.formErrors.phone}</span>
-				</ReactTooltip>}
+				{this.state.phone && this.state.formErrors.phone
+					? <ReactTooltip id='phone' type='error'>
+						<span>{this.state.formErrors.phone}</span>
+					</ReactTooltip>
+					: null}
 
 				<div data-tip data-for="email">
 					<Input type='email' required={this.state.company} name='email'
 								 title={this.state.company ? 'E-mail  ⃰' : 'E-mail'}
-								 hasError={this.errorClass(this.state.formErrors.email)}
+								 hasError={this.state.email && this.errorClass(this.state.formErrors.email)}
 								 value={this.state.email}
 								 valid={this.state.emailValid}
 								 handleUserInput={this.handleUserInput}/>
 				</div>
-				{this.state.formErrors.email &&
-				<ReactTooltip id='email' type='error'>
-					<span>{this.state.formErrors.email}</span>
-				</ReactTooltip>}
+				{this.state.email && this.state.formErrors.email
+					? <ReactTooltip id='email' type='error'>
+						<span>{this.state.formErrors.email}</span>
+					</ReactTooltip>
+					: null}
 
 				{this.state.company && <>
 					<div data-tip data-for="inn">
 						<Input type='inn' required={this.state.company} name='inn'
 									 title={this.state.company ? 'ИНН  ⃰' : 'ИНН'}
-									 hasError={this.errorClass(this.state.formErrors.inn)}
+									 hasError={this.state.inn && this.errorClass(this.state.formErrors.inn)}
 									 value={this.state.inn}
 									 valid={this.state.innValid}
 									 handleUserInput={this.handleUserInput}/>
 					</div>
-					{this.state.formErrors.inn &&
-					<ReactTooltip id='inn' type='error'>
-						<span>{this.state.formErrors.inn}</span>
-					</ReactTooltip>}</>}
+					{this.state.inn && this.state.formErrors.inn
+						? <ReactTooltip id='inn' type='error'>
+							<span>{this.state.formErrors.inn}</span>
+						</ReactTooltip>
+						: null}
+				</>}
 
 				<div data-tip data-for="submit">
 					<button className={!this.state.formValid ? s.submitBtn_disabled : s.submitBtn} type="submit"
@@ -314,11 +316,11 @@ class Form extends Component {
 					</button>
 				</div>
 				{!this.state.formValid &&
-					<ReactTooltip id='submit' type='error'>
+				<ReactTooltip id='submit' type='error'>
 						<span>
 							<FormErrors formErrors={this.state.formErrors}/>
 						</span>
-					</ReactTooltip>}
+				</ReactTooltip>}
 			</form>
 		)
 	}
