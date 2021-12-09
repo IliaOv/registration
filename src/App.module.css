@@ -4,6 +4,7 @@ body {
     margin: 0;
     font-family: 'Ubuntu', sans-serif;
     color: var(--txt-color);
+    background-color: #565656;
 }
 
 .app {
@@ -19,4 +20,19 @@ body {
     width: 100%;
     font-size: 32px;
     font-weight: 600;
+}
+
+
+.form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+input {
+    width: 100%;
+    padding: 22px 20px 10px 20px;
+    border: 1px solid var(--inactive-color);
+    border-radius: 4px;
+    box-sizing: border-box;
 }

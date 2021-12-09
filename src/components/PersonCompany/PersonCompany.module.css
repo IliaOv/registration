@@ -1,0 +1,25 @@
+@import '../../variables.css';
+
+.clientType {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin: 40px 0;
+}
+
+.clientType__person {
+    padding: 2px;
+}
+
+.clientType__company {
+    padding: 2px;
+    color: var(--accent-color);
+    border-bottom: 1px dashed var(--accent-color);
+    cursor: pointer;
+}
+
+.clientType__company:hover {
+    color: var(--txt-color);
+    border-bottom: 1px dashed var(--txt-color);
+}

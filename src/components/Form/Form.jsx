@@ -3,13 +3,14 @@ import Input from '../Input/Input';
 import s from './Form.module.css';
 import ToggleSwitch from '../ToggleSwitch/ToggleSwitch';
 import ReactTooltip from 'react-tooltip';
-import FormErrors from './FormErrors';
+import FormErrors from '../FormErrors/FormErrors';
 
 class Form extends Component {
 	constructor(props) {
 		super(props);
 
 		this.changePasswordType = this.changePasswordType.bind(this)
+		this.foundDuplicatePhone = this.foundDuplicatePhone.bind(this)
 
 		this.state = {
 			company: false,
@@ -183,6 +184,14 @@ class Form extends Component {
 		return error.length
 	}
 
+	foundDuplicatePhone(e) {
+		e.preventDefault();
+		let fieldValidationErrors = this.state.formErrors;
+		fieldValidationErrors.phone = 'Пользователь с таким номером телефона уже зарегистрирован.'
+		this.setState({formErrors: fieldValidationErrors}, this.validateForm)
+		//alert('Пользователь с таким номером телефона уже зарегистрирован.')
+	}
+
 	render() {
 		return (
 			<form className={s.form} id='registration'>
@@ -308,9 +317,12 @@ class Form extends Component {
 				</>}
 
 				<div data-tip data-for="submit">
-					<button className={!this.state.formValid ? s.submitBtn_disabled : s.submitBtn} type="submit"
+					<button className={!this.state.formValid ? s.submitBtn_disabled : s.submitBtn}
+									type="submit"
 									form="registration"
-									disabled={!this.state.formValid}>
+									disabled={!this.state.formValid}
+									onClick={this.state.phone === '+7 (456) 123-45-62' ? this.foundDuplicatePhone : null}
+					>
 						Далее
 						<i className="fa fa-long-arrow-right"/>
 					</button>

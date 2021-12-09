@@ -63,7 +63,6 @@ class ToggleSwitch extends Component {
 	}
 }
 
-// Set optionLabels for rendering.
 ToggleSwitch.defaultProps = {
 	optionLabels: ['Yes', 'No']
 };
