@@ -38,6 +38,33 @@ input {
     box-sizing: border-box;
 }
 
+.passwordBlock {
+    margin: 40px 0;
+}
+
+.progress {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    margin: 8px 0 14px 0;
+}
+
+.progress__item {
+    height: 4px;
+    width: 30%;
+    background-color: var(--inactive-color);
+    border-radius: 4px;
+}
+.progress__item_1 {
+    background-color: var(--progress-color-1);
+}
+.progress__item_2 {
+    background-color: var(--progress-color-2);
+}
+.progress__item_3 {
+    background-color: var(--progress-color-3);
+}
+
 .submitBtn {
     display: flex;
     align-items: center;

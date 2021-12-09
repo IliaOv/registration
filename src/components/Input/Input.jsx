@@ -34,7 +34,7 @@ class Input extends Component {
 					<i className="fa fa-check-circle"/>
 				</span>}
 				{this.props.value && (this.props.name === 'password' || this.props.name === 'secondPassword') &&
-				<span className={s.eye} onClick={this.props.changeType}>
+				<span className={s.eye} onClick={this.props.changePasswordType}>
 					<i className="fa fa-eye"/>
 				</span>}
 

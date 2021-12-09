@@ -4,7 +4,6 @@ import Form from './components/Form/Form';
 
 class App extends Component {
 	render() {
-		console.log(1)
 		return (
 			<div className={s.app}>
 				<header className={s.header}>
