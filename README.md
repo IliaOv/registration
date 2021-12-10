@@ -1,5 +1,5 @@
 ## Стек
-React + Mobx + любой css
+React Mobx CSS
 
 ## Available Scripts
 In the project directory, you can run:
@@ -28,4 +28,4 @@ E-mail - обязательно для ЮЛ, проверка на валидн�
 
 ## Nice to have
 Сделать реальный сабмит в Node.js с обработкой запроса и ответом, на время сабмита сделать лоадер на кнопке.
-
+[https://github.com/IliaOv/registration-backend](https://github.com/IliaOv/registration-backend)

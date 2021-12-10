@@ -10,14 +10,24 @@ class SubmitBtn extends React.Component {
 		return (
 			<>
 				<div data-tip data-for="submit">
-					<button className={!store.formValid ? s.submitBtn_disabled : s.submitBtn}
-									type="submit"
+
+					<button className={(!store.formValid || store.posting) ? s.submitBtn_disabled : s.submitBtn}
+									type='submit'
 									form="registration"
-									disabled={!store.formValid}
-									onClick={store.phone === '+7 (456) 123-45-62' ? store.foundDuplicatePhone : null}
+									disabled={!store.formValid || store.posting}
+									onClick={store.phone === '+7 (456) 123-45-62' ? store.foundDuplicatePhone : store.post}
 					>
-						Далее
-						<i className="fa fa-long-arrow-right"/>
+						{store.posting
+							? <>
+								Загрузка
+								<i className={s.spinner}>
+									<i className="fa fa-spinner"/>
+								</i>
+							</>
+							: <>
+								Далее
+								<i className="fa fa-long-arrow-right"/>
+							</>}
 					</button>
 				</div>
 				{!store.formValid &&

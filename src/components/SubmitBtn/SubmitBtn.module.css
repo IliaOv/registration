@@ -22,7 +22,7 @@
     width: 45%;
     margin-top: 30px;
     padding: 20px 30px;
-    background-color: var(--inactive-color);
+    background-color: var(--second-color);
     font-size: 16px;
     color: white;
     border: none;
@@ -36,4 +36,18 @@
 .submitBtn i {
     margin-left: 10px;
     font-size: 18px;
+}
+
+@keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.spinner i {
+    color: var(--inactive-color);
+    animation: rotation 4s linear infinite;
 }

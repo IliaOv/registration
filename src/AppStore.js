@@ -1,6 +1,8 @@
 import {action, makeObservable, observable} from 'mobx';
 import s from './components/Passwords/Passwords.module.css';
 
+const axios = require('axios');
+
 class AppStore {
 	company = false
 
@@ -21,6 +23,7 @@ class AppStore {
 	emailValid = false
 	innValid = false
 	formValid = false
+	posting = false
 
 	passwordInputType = 'password'
 	progressPassword = ''
@@ -56,6 +59,7 @@ class AppStore {
 			emailValid: observable,
 			innValid: observable,
 			formValid: observable,
+			posting: observable,
 
 			passwordInputType: observable,
 			progressPassword: observable,
@@ -70,11 +74,16 @@ class AppStore {
 			validateField: action,
 			validateForm: action,
 			errorClass: action,
-			foundDuplicatePhone: action
+			foundDuplicatePhone: action,
+			resetData: action,
+			updatePosting: action,
+			post: action
 		})
+
 		this.handleUserInput = this.handleUserInput.bind(this)
 		this.changePasswordType = this.changePasswordType.bind(this)
 		this.foundDuplicatePhone = this.foundDuplicatePhone.bind(this)
+		this.post = this.post.bind(this)
 	}
 
 	validateAll() {
@@ -239,6 +248,47 @@ class AppStore {
 		fieldValidationErrors.phone = 'Пользователь с таким номером телефона уже зарегистрирован.'
 		this.formErrors = fieldValidationErrors
 		this.validateForm()
+	}
+
+	resetData() {
+		this.surname = ''
+		this.name = ''
+		this.patronymic = ''
+		this.password = ''
+		this.secondPassword = ''
+		this.phone = ''
+		this.email = ''
+		this.inn = ''
+		this.posting = false
+		this.validateAll()
+		this.validateForm()
+	}
+
+	updatePosting() {
+		this.posting = true
+	}
+
+	async post(e) {
+		e.preventDefault()
+		this.updatePosting()
+		try {
+			await axios
+				.post('http://localhost:5000/users', {
+					'surname': this.surname,
+					'name': this.name,
+					'patronymic': this.patronymic,
+					'password': this.password,
+					'phone': this.phone,
+					'email': this.email,
+					'inn': this.inn
+				})
+				.then((response) => {
+					console.log(response);
+					this.resetData()
+				});
+		} catch (error) {
+			console.error(error);
+		}
 	}
 }
 

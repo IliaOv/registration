@@ -11,6 +11,13 @@ class Input extends Component {
 		};
 	}
 
+	handleFocus = () => {
+		this.setState({focus: true})
+	}
+	handleBlur = () => {
+		this.setState({focus: false})
+	}
+
 	render() {
 		return (
 			<div className={this.props.hasError ? `${s.block} ${s.has_error}` : s.block}>
@@ -25,8 +32,8 @@ class Input extends Component {
 								 required={this.props.required}
 								 name={this.props.name}
 								 onChange={e => this.props.handleUserInput(e)}
-								 onFocus={() => this.setState({focus: true})}
-								 onBlur={() => this.setState({focus: false})}
+								 onFocus={this.handleFocus}
+								 onBlur={this.handleBlur}
 					/>
 				</div>
 				{this.props.valid && this.props.value && this.props.name !== 'password' && this.props.name !== 'secondPassword' &&
