@@ -27,10 +27,10 @@ class AppStore {
 
 	formErrors = {
 		surname: '',
-		name: '',
-		password: '',
+		name: 'Имя должно быть заполнено',
+		password: 'Пароль слишком короткий или не содержит ни одной цифры',
 		secondPassword: '',
-		phone: '',
+		phone: 'Телефон некорректен',
 		email: '',
 		inn: ''
 	}
@@ -61,6 +61,7 @@ class AppStore {
 			progressPassword: observable,
 			formErrors: observable,
 
+			validateAll: action,
 			changeUser: action,
 			handleUserInput: action,
 			maskPhone: action,
@@ -73,12 +74,10 @@ class AppStore {
 		})
 		this.handleUserInput = this.handleUserInput.bind(this)
 		this.changePasswordType = this.changePasswordType.bind(this)
-		this.validateForm = this.validateForm.bind(this)
 		this.foundDuplicatePhone = this.foundDuplicatePhone.bind(this)
 	}
 
-	changeUser = () => {
-		this.company = !this.company
+	validateAll() {
 		this.validateField('surname', this.surname)
 		this.validateField('name', this.name)
 		this.validateField('password', this.password)
@@ -88,6 +87,11 @@ class AppStore {
 		this.validateField('inn', this.inn)
 	}
 
+	changeUser = () => {
+		this.company = !this.company
+		this.validateAll()
+	}
+
 	handleUserInput(e) {
 		const name = e.target.name;
 		const value = e.target.value;
@@ -95,11 +99,11 @@ class AppStore {
 			this.maskPhone(e)
 		} else {
 			this[name] = value;
-			this.validateField(name, value)
 			if (name === 'password') {
 				this.setProgressPassword(value)
 			}
 		}
+		this.validateAll()
 	}
 
 	maskPhone(e) {
@@ -115,10 +119,8 @@ class AppStore {
 			if (val.length > 0 && val.length <= 10) {
 				let num = `+7 (${val.substring(0, 3)}) ${val.substring(3, 6)}-${val.substring(6, 8)}-${val.substring(8, val.length)}`;
 				this.phone = num.trim();
-				this.validateField('phone', num)
 			}
 		}
-
 	}
 
 	setProgressPassword(value) {
@@ -142,7 +144,7 @@ class AppStore {
 	}
 
 	validateField(fieldName, value) {
-		let fieldValidationErrors = this.formErrors,
+		let formErrors = this.formErrors,
 			company = this.company,
 			surnameValid = this.surnameValid,
 			nameValid = this.nameValid,
@@ -155,22 +157,28 @@ class AppStore {
 		switch (fieldName) {
 			case 'surname':
 				surnameValid = !company ? 1 : (value.length > 0);
-				fieldValidationErrors.surname = surnameValid ? '' : 'Фамилия должна быть заполнена';
+				formErrors.surname = surnameValid ? '' : 'Фамилия должна быть заполнена';
+				this.surnameValid = surnameValid
 				break;
 			case 'name':
 				nameValid = value.length > 0;
-				fieldValidationErrors.name = nameValid ? '' : 'Имя должно быть заполнено'
+				formErrors.name = nameValid ? '' : 'Имя должно быть заполнено'
+				this.nameValid = nameValid
 				break;
 			case 'password':
-			case 'secondPassword':
 				passwordValid = (value.length >= 6) && value.match(/(?=.*[0-9])/g);
-				fieldValidationErrors.password = passwordValid ? '' : 'Пароль слишком короткий или не содержит ни одной цифры';
+				formErrors.password = passwordValid ? '' : 'Пароль слишком короткий или не содержит ни одной цифры';
+				this.passwordValid = passwordValid
+				break;
+			case 'secondPassword':
 				secondPasswordValid = (this.password === this.secondPassword);
-				fieldValidationErrors.secondPassword = secondPasswordValid ? '' : 'Пароли не совпадают';
+				formErrors.secondPassword = secondPasswordValid ? '' : 'Пароли не совпадают';
+				this.secondPasswordValid = secondPasswordValid
 				break;
 			case 'phone':
 				phoneValid = value.length === 18;
-				fieldValidationErrors.phone = phoneValid ? '' : 'Телефон некорректен';
+				formErrors.phone = phoneValid ? '' : 'Телефон некорректен';
+				this.phoneValid = phoneValid
 				break;
 			case 'email':
 				if (!this.company && !value.length) {
@@ -178,31 +186,45 @@ class AppStore {
 				} else {
 					emailValid = value.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i);
 				}
-				fieldValidationErrors.email = emailValid ? '' : 'E-mail некорректен';
+				formErrors.email = emailValid ? '' : 'E-mail некорректен';
+				this.emailValid = emailValid
 				break;
 			case 'inn':
 				innValid = !this.company ? 1 : value.match(/^[0-9]{10}$/i);
-				fieldValidationErrors.inn = innValid ? '' : 'ИНН некорректен';
+				formErrors.inn = innValid ? '' : 'ИНН некорректен';
+				this.innValid = innValid
 				break;
 			default:
 				break;
 		}
-		this.formErrors = fieldValidationErrors
-		this.surnameValid = surnameValid
-		this.nameValid = nameValid
-		this.passwordValid = passwordValid
-		this.secondPasswordValid = secondPasswordValid
-		this.phoneValid = phoneValid
-		this.emailValid = emailValid
-		this.innValid = innValid
+		this.formErrors = {
+			surname: formErrors.surname,
+			name: formErrors.name,
+			password: formErrors.password,
+			secondPassword: formErrors.secondPassword,
+			phone: formErrors.phone,
+			email: formErrors.email,
+			inn: formErrors.inn
+		}
 		this.validateForm()
 	}
 
 	validateForm() {
 		if (this.company) {
-			this.formValid = this.nameValid && this.surnameValid && this.passwordValid && this.secondPasswordValid && this.phoneValid && this.emailValid && this.innValid
+			this.formValid =
+				this.nameValid && this.name.length &&
+				this.surnameValid && this.surname.length &&
+				this.passwordValid && this.password.length &&
+				this.secondPasswordValid && this.secondPassword.length &&
+				this.phoneValid && this.phone.length &&
+				this.emailValid && this.email.length &&
+				this.innValid && this.inn.length
 		} else {
-			this.formValid = this.nameValid && this.passwordValid && this.secondPasswordValid && this.phoneValid
+			this.formValid =
+				this.nameValid && this.name.length &&
+				this.passwordValid && this.password.length &&
+				this.secondPasswordValid && this.secondPassword.length &&
+				this.phoneValid && this.phone.length
 		}
 	}
 

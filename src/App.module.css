@@ -4,7 +4,7 @@ body {
     margin: 0;
     font-family: 'Ubuntu', sans-serif;
     color: var(--txt-color);
-    background-color: #565656;
+    /*background-color: #565656;*/
 }
 
 .app {
